@@ -3,19 +3,39 @@
 const Tone = require("Tone");
 const MidiConvert = require("MidiConvert");
 
+// set DOM objects
+const inputContainer       = document.querySelector("#input-container");
+const fileInputDisplayText = document.querySelector("#file-input-display-text");
+const playButton           = document.querySelector("#play-button");
+
 // create synth
 var synth = new Tone.PolySynth(10).toMaster();
 
-// load midi data
-MidiConvert.load("assets/xanadu.mid", function(midi) {
+function selectMidiSong(file) {
 
-    Tone.Transport.bpm.value = midi.header.bpm;
+    fileInputDisplayText.innerHTML = file.name;
+    loadMidiData(file);
+}
 
-    loadKeyMapData(midi);
-    createMidiSong(midi);
-});
+function loadMidiData(file) {
+
+    var reader = new FileReader();
+
+    reader.onload = function(e) {
+        
+        var midi = MidiConvert.parse(e.target.result);
+
+        loadKeyMapData(midi);
+        createMidiSong(midi);
+    };
+
+    reader.readAsBinaryString(file);
+}
 
 function loadKeyMapData(midi) {
+
+    // recreate the key map for the sketch
+    createKeyMap();
 
     // loop through all tracks
     for (var i = 0; i < midi.tracks.length; i++) {
@@ -32,6 +52,9 @@ function loadKeyMapData(midi) {
 }
 
 function createMidiSong(midi) {
+
+    // remove all previous saved information
+    Tone.Transport.cancel();
 
     // create an array to contain all notes
     var notes = [];
@@ -59,4 +82,8 @@ function playMidiSong() {
 }
 
 // event listeners
-window.addEventListener("mousedown", playMidiSong);
+playButton.addEventListener("click", function() {
+
+    playMidiSong();
+    inputContainer.style.display = "none";
+});

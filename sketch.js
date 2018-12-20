@@ -13,7 +13,7 @@ var secondSize;
 // key variables
 var keys = [];           // list of key objects
 var keyMap = [];         // list of key pressed states
-var keyboardTime = -1;   // time when midi starts playing (used to syncronize visualization and sound)
+var keyboardTime = -1;   // time when midi starts playing (used to syncronize sketch and sound)
 
 function setup() {
 
@@ -22,7 +22,6 @@ function setup() {
     setSizeVariables();
 
     createKeys();
-    createKeyMap();
 }
 
 function setSizeVariables() {
@@ -94,44 +93,54 @@ function windowResized() {
 
 function drawKeyboard() {
 
-    var yPos = height - paddingBottom - whiteKeyHeight;
+    // order of keyboard colours to be drawn
+    var keyboardColours = [ "white", "black" ];
 
-    // draw white keys
-    for (var i = 0; i < keys.length; i++) {
+    // loop once for white keys, once for black keys
+    for (var colourCounter = 0; colourCounter < keyboardColours.length; colourCounter++) {
 
-        if (keys[i].colour === "white") {
+        // loop through all keys
+        for (var i = 0; i < keys.length; i++) {
 
-            fill(keys[i].active ? color(0, 128, 255) : 255);
-            stroke(128);
-            rect(
-                paddingLeft + keys[i].position * whiteKeyWidth,
-                yPos,
-                whiteKeyWidth,
-                whiteKeyHeight
-            );
+            if (keys[i].colour === keyboardColours[colourCounter]) {
+                drawKey(keys[i]);
+            }
         }
     }
+}
 
-    // draw black keys
-    for (var i = 0; i < keys.length; i++) {
+function drawKey(key) {
 
-        if (keys[i].colour === "black") {
+    var yPos = height - paddingBottom - whiteKeyHeight;
 
-            fill(keys[i].active ? color(0, 128, 255) : 0);
-            stroke(128);
-            rect(
-                paddingLeft + keys[i].position * whiteKeyWidth + blackKeyWidth / 2,
-                yPos,
-                blackKeyWidth,
-                blackKeyHeight
-            );
-        }
+    if (key.colour === "white") {
+
+        fill(key.active ? color(0, 128, 255) : 255);
+        stroke(128);
+        rect(
+            paddingLeft + key.position * whiteKeyWidth,
+            yPos,
+            whiteKeyWidth,
+            whiteKeyHeight
+        );
+    }
+    
+    if (key.colour === "black") {
+
+        fill(key.active ? color(0, 128, 255) : 0);
+        stroke(128);
+        rect(
+            paddingLeft + key.position * whiteKeyWidth + blackKeyWidth / 2,
+            yPos,
+            blackKeyWidth,
+            blackKeyHeight
+        );
     }
 }
 
 function drawIncomingNotes() {
 
-    // return if visualization hasn't started
+    // return if sketch hasn't started
     if (keyboardTime === -1) {
         return;
     }
@@ -146,58 +155,74 @@ function drawIncomingNotes() {
     var incomingNotesHeight = height - paddingBottom - keyboardHeight - keyboardPadding;
     var incomingNotesTime   = incomingNotesHeight / secondSize;
 
-    // loop through all keys
-    for (var i = 0; i < keys.length; i++) {
+    // order of keyboard colours to be drawn
+    var keyboardColours = [ "white", "black" ];
 
-        // loop through key pressed intervals
-        for (var j = 0; j < keyMap[keys[i].id].length; j++) {
+    // loop once for white keys, once for black keys
+    for (var colourCounter = 0; colourCounter <  keyboardColours.length; colourCounter++) {
+            
+        // loop through all keys
+        for (var i = 0; i < keys.length; i++) {
 
-            var interval = keyMap[keys[i].id][j];
+            // loop through key pressed intervals
+            for (var j = 0; j < keyMap[keys[i].id].length; j++) {
 
-            // set the starting y position (closer to keyboard) and the ending y position (further from keyboard)
-            var startY = ((time + incomingNotesTime) - interval.start) * secondSize;
-            var endY   = ((time + incomingNotesTime) - interval.end) * secondSize;
+                var interval = keyMap[keys[i].id][j];
 
-            // do not draw if out of visible range
-            if ((startY < 0 && endY < 0) || (startY > incomingNotesHeight && endY > incomingNotesHeight)) {
-                continue;
-            }
+                // set the starting y position (closer to keyboard) and the ending y position (further from keyboard)
+                var startY = ((time + incomingNotesTime) - interval.start) * secondSize;
+                var endY   = ((time + incomingNotesTime) - interval.end) * secondSize;
 
-            // restrict startY to stay above keyboard
-            startY = min(incomingNotesHeight, startY);
+                // do not draw if out of visible range
+                if ((startY < 0 && endY < 0) || (startY > incomingNotesHeight && endY > incomingNotesHeight)) {
+                    continue;
+                }
 
-            // draw incoming note
-            if (keys[i].colour === "white") {
+                // restrict startY to stay above keyboard
+                startY = min(incomingNotesHeight, startY);
 
-                stroke(32);
-                fill(0, 128, 255);
-                rect(
-                    paddingLeft + keys[i].position * whiteKeyWidth,
-                    startY - (startY - endY),
-                    whiteKeyWidth,
-                    startY - endY,
-                    4
-                ); // same as y = startY, h = -(startY - endY)
-            }
-            if (keys[i].colour === "black") {
+                // draw incoming note
+                if (keys[i].colour === keyboardColours[colourCounter]) {
 
-                stroke(32);
-                fill(0, 128, 255);
-                rect(
-                    paddingLeft + keys[i].position * whiteKeyWidth + blackKeyWidth / 2,
-                    startY - (startY - endY),
-                    blackKeyWidth,
-                    startY - endY,
-                    4
-                ); // same as y = startY, h = -(startY - endY)
+                    drawIncomingNote(keys[i], startY, endY);
+                }
             }
         }
     }
 }
 
+function drawIncomingNote(key, startY, endY) {
+
+    if (key.colour === "white") {
+
+        stroke(32);
+        fill(0, 128, 255);
+        rect(
+            paddingLeft + key.position * whiteKeyWidth,
+            startY - (startY - endY),
+            whiteKeyWidth,
+            startY - endY,
+            4
+        ); // same as y = startY, h = -(startY - endY)
+    }
+
+    if (key.colour === "black") {
+
+        stroke(32);
+        fill(0, 128, 255);
+        rect(
+            paddingLeft + key.position * whiteKeyWidth + blackKeyWidth / 2,
+            startY - (startY - endY),
+            blackKeyWidth,
+            startY - endY,
+            4
+        ); // same as y = startY, h = -(startY - endY)
+    }
+}
+
 function updateKeyActivity() {
 
-    // return if visualization hasn't started
+    // return if sketch hasn't started
     if (keyboardTime === -1) {
         return;
     }

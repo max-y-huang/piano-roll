@@ -9,8 +9,21 @@
 </head>
 <body>
 
+    <div id="input-container">
+        <div id="file-input-display">
+            <input id="file-input" type="file" accept="audio/midi" onchange="selectMidiSong(this.files[0]);">
+            <span id="file-input-display-text">Drop MIDI file here</span>
+        </div>
+        <button id="play-button">Play</button>
+    </div>
+
     <script src="https://cdnjs.cloudflare.com/ajax/libs/p5.js/0.7.2/p5.js"></script>
     <script src="sketch.js"></script>
     <script src="index.js"></script>
+
+    <script>
+
+        
+    </script>
 </body>
 </html>
