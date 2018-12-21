@@ -13,18 +13,22 @@ var synth = new Tone.PolySynth(10).toMaster();
 
 function selectMidiSong(file) {
 
+    // set the file diplay text to the file name and load midi data
     fileInputDisplayText.innerHTML = file.name;
     loadMidiData(file);
 }
 
 function loadMidiData(file) {
 
+    // create file reader
     var reader = new FileReader();
 
     reader.onload = function(e) {
         
+        // get midi file
         var midi = MidiConvert.parse(e.target.result);
 
+        // load key map data and create midi song
         loadKeyMapData(midi);
         createMidiSong(midi);
     };
@@ -39,6 +43,10 @@ function loadKeyMapData(midi) {
 
     // loop through all tracks
     for (var i = 0; i < midi.tracks.length; i++) {
+
+        if (midi.tracks[i].isPercussion) {
+            continue;
+        }
 
         // loop through all notes
         for (var j = 0; j < midi.tracks[i].notes.length; j++) {
@@ -60,6 +68,10 @@ function createMidiSong(midi) {
     var notes = [];
 
     for (var i = 0; i < midi.tracks.length; i++) {
+
+        if (midi.tracks[i].isPercussion) {
+            continue;
+        }
         
         // concatinate all notes into a single array
         notes = notes.concat(midi.tracks[i].notes);
