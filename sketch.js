@@ -32,7 +32,7 @@ function setSizeVariables() {
     whiteKeyHeight = keyboardHeight;
     blackKeyWidth = whiteKeyWidth * 0.5;
     blackKeyHeight = whiteKeyHeight * 5 / 8;
-    secondSize = keyboardHeight;
+    secondSize = (height - paddingBottom - keyboardHeight) / 4;
 }
 
 function createKeys() {
