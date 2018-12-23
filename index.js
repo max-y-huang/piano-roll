@@ -28,6 +28,8 @@ function loadMidiData(file) {
         // get midi file
         var midi = MidiConvert.parse(e.target.result);
 
+        songDuration = midi.duration;
+
         // load key map data and create midi song
         loadKeyMapData(midi);
         createMidiSong(midi);
@@ -87,10 +89,17 @@ function createMidiSong(midi) {
 
 function playMidiSong() {
 
-    // play and visualize midi on mouse down
+    // play and visualize midi
     Tone.Transport.stop();
     Tone.Transport.start();
-    keyboardTime = millis() / 1000;
+    timeEllapsedShift = Tone.now().toFixed(3);
+}
+
+function stopMidiSong() {
+
+    // stop midi song (to prevent autoplay when next song is selected)
+    Tone.Transport.stop();
+    timeEllapsedShift = -1;
 }
 
 // event listeners

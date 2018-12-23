@@ -11,9 +11,8 @@ var blackKeyWidth, blackKeyHeight;
 var secondSize;
 
 // key variables
-var keys = [];           // list of key objects
-var keyMap = [];         // list of key pressed states
-var keyboardTime = -1;   // time when midi starts playing (used to syncronize sketch and sound)
+var keys = [];              // list of key objects
+var keyMap = [];            // list of key pressed states
 
 function setup() {
 
@@ -76,6 +75,12 @@ function createKeyMap() {
 }
 
 function draw() {
+
+    if (timeElapsed() > songDuration + 0.1) {
+
+        stopMidiSong();
+        inputContainer.style.display = "block";
+    }
 
     updateKeyActivity();
 
@@ -141,12 +146,9 @@ function drawKey(key) {
 function drawIncomingNotes() {
 
     // return if sketch hasn't started
-    if (keyboardTime === -1) {
+    if (timeEllapsedShift === -1) {
         return;
     }
-
-    // get time ellapsed (in seconds)
-    var time = millis() / 1000 - keyboardTime;
 
     // padding between the keyboard and the notes
     var keyboardPadding = 4;
@@ -170,8 +172,8 @@ function drawIncomingNotes() {
                 var interval = keyMap[keys[i].id][j];
 
                 // set the starting y position (closer to keyboard) and the ending y position (further from keyboard)
-                var startY = ((time + incomingNotesTime) - interval.start) * secondSize;
-                var endY   = ((time + incomingNotesTime) - interval.end) * secondSize;
+                var startY = ((timeElapsed() + incomingNotesTime) - interval.start) * secondSize;
+                var endY   = ((timeElapsed() + incomingNotesTime) - interval.end) * secondSize;
 
                 // do not draw if out of visible range
                 if ((startY < 0 && endY < 0) || (startY > incomingNotesHeight && endY > incomingNotesHeight)) {
@@ -223,12 +225,9 @@ function drawIncomingNote(key, startY, endY) {
 function updateKeyActivity() {
 
     // return if sketch hasn't started
-    if (keyboardTime === -1) {
+    if (timeEllapsedShift === -1) {
         return;
     }
-
-    // get time ellapsed (in seconds)
-    var time = millis() / 1000 - keyboardTime;
 
     // loop through all keys
     for (var i = 0; i < keys.length; i++) {
@@ -242,7 +241,7 @@ function updateKeyActivity() {
             var interval = keyMap[keys[i].id][j];
 
             // set active variable to true if current time is inside a pressed interval
-            if (interval.start < time && interval.end > time) {
+            if (interval.start < timeElapsed() && interval.end > timeElapsed()) {
                 keys[i].active = true;
             }
         }
