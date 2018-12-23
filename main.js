@@ -13,6 +13,8 @@ app.on('ready', function() {
     win = new BrowserWindow({
     });
 
+    win.setMenu(null);
+
     win.loadURL(url.format({
         pathname: path.join(__dirname, "index.html"),
         protocol: "file",
