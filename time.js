@@ -1,4 +1,3 @@
-
 var timeEllapsedShift = -1;
 var songDuration = -1;
 

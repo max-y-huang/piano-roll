@@ -1,4 +1,3 @@
-
 // include dependencies
 const Tone = require("Tone");
 const MidiConvert = require("MidiConvert");

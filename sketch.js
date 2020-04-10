@@ -1,4 +1,3 @@
-
 // sizing variables
 var paddingBottom = 32,
     paddingLeft = 32,
