@@ -7,22 +7,22 @@ const url = require("url");
 
 let win;
 
-app.on('ready', function() {
+app.on('ready', function () {
 
-    win = new BrowserWindow({
-    });
+  win = new BrowserWindow({
+  });
 
-    win.setMenu(null);
+  win.setMenu(null);
 
-    win.loadURL(url.format({
-        pathname: path.join(__dirname, "index.html"),
-        protocol: "file",
-        slashes: true
-    }));
+  win.loadURL(url.format({
+    pathname: path.join(__dirname, "index.html"),
+    protocol: "file",
+    slashes: true
+  }));
 
-    win.on("closed", () => {
+  win.on("closed", () => {
 
-        win = null;
-    });
+    win = null;
+  });
 
 });
