@@ -83,7 +83,7 @@ function draw() {
 
   updateKeyActivity();
 
-  background(32);
+  background(250);
   drawIncomingNotes();
   drawKeyboard();
 }
@@ -120,7 +120,7 @@ function drawKey(key) {
   if (key.colour === "white") {
 
     fill(key.active ? color(0, 128, 255) : 255);
-    stroke(128);
+    stroke(32);
     rect(
       paddingLeft + key.position * whiteKeyWidth,
       yPos,
@@ -132,7 +132,7 @@ function drawKey(key) {
   if (key.colour === "black") {
 
     fill(key.active ? color(0, 128, 255) : 0);
-    stroke(128);
+    stroke(32);
     rect(
       paddingLeft + key.position * whiteKeyWidth + blackKeyWidth / 2,
       yPos,
@@ -196,8 +196,8 @@ function drawIncomingNote(key, startY, endY) {
 
   if (key.colour === "white") {
 
-    stroke(32);
-    fill(0, 128, 255);
+    stroke(0, 128, 255);
+    fill(64, 156, 255);
     rect(
       paddingLeft + key.position * whiteKeyWidth,
       startY - (startY - endY),
@@ -209,8 +209,8 @@ function drawIncomingNote(key, startY, endY) {
 
   if (key.colour === "black") {
 
-    stroke(32);
-    fill(0, 128, 255);
+    stroke(0, 128, 255);
+    fill(64, 156, 255);
     rect(
       paddingLeft + key.position * whiteKeyWidth + blackKeyWidth / 2,
       startY - (startY - endY),
