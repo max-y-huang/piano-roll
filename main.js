@@ -10,6 +10,10 @@ let win;
 app.on('ready', function () {
 
   win = new BrowserWindow({
+    webPreferences: {
+      nodeIntegration: true,
+      contextIsolation: false,
+    }
   });
 
   win.setMenu(null);
